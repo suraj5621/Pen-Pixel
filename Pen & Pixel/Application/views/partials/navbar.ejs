@@ -1,0 +1,85 @@
+<% layout('/layouts/boilerplate')%>
+
+<nav class="bg-gradient-to-r from-gray-900 to-gray-800 px-4 py-3">
+  <div class="max-w-7xl mx-auto flex justify-between items-center">
+    <!-- Logo -->
+    <a href="#" class="text-white text-2xl font-semibold"><em>Pen & Pixel</em></a>
+
+    <form class="flex items-center" role="search" action="/blogs" method="get" style="margin-left: 158px;">
+      <select name="category" id="category" class="form-select mr-3 focus:ring-gray-300 focus:border-blue-700 py-2 px-4 rounded-xl dark:bg-gray-700 dark:border-gray-700 dark:text-white" style="width: 250px;" required>
+        <option value="All">All</option>
+        <option value="Astronomy">Astronomy</option>
+        <option value="Physiology">Physiology</option>
+        <option value="Foddies">Foddies</option>
+      </select>
+      
+      <button class="bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 focus:ring-primary-300 text-white font-medium rounded-lg text-sm px-5 py-2.5 transition duration-300 ease-in-out" type="submit">Search</button>
+    </form>
+
+    <!-- Navigation Links -->
+    <ul class="flex space-x-4 items-center">
+      <li><a href="/blogs" class="text-white hover:text-gray-200">Home</a></li>
+
+      <% if(currentUser && (currentUser.role == 'elite_writer' || currentUser.role == 'premium_writer')){ %>
+        <li><a href="/blogs/new" class="text-white hover:text-gray-200">Add new</a></li>
+      <% } %>
+      <li><a href="#" class="text-white hover:text-gray-200">Contact</a></li>
+      
+      <% if(!currentUser){ %>
+        <li><a href="/login" class="text-white hover:text-gray-200">Login</a></li>
+      <% } else { %>
+        <li class="relative">
+          <button class="text-white hover:text-gray-200">Hello, <%=currentUser.username%></button>
+          <!-- <ul class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-md hidden">
+            <li><a href="/profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Profile</a></li>
+          </ul> -->
+        </li>
+        <li>
+          <form action="/logout" method="post">
+            <button class="text-white hover:text-gray-200">Logout</button>
+          </form>
+        </li>
+      <% } %>
+    </ul>
+  </div>
+</nav>
+
+
+<script>
+  let audioMessage;
+
+  // Function to speak selected text
+  function speakSelectedText() {
+    const selectedText = window.getSelection().toString().trim();
+    if (selectedText) {
+      audioMessage.text = selectedText;
+      window.speechSynthesis.speak(audioMessage);
+    }
+  }
+
+  window.onload = () => {
+    if ("speechSynthesis" in window) {
+      audioMessage = new SpeechSynthesisUtterance();
+    } else {
+      alert("Speech Synthesis is not supported");
+    }
+  };
+
+  // Listen for mouseup event to detect selection across the document
+  document.addEventListener('mouseup', speakSelectedText);
+
+  // Toggle dropdown menu
+  const dropdownBtn = document.querySelector('.relative button');
+  const dropdownMenu = document.querySelector('.relative ul');
+
+  dropdownBtn.addEventListener('click', () => {
+    dropdownMenu.classList.toggle('hidden');
+  });
+
+  // Close dropdown menu when clicking outside
+  document.addEventListener('click', (event) => {
+    if (!dropdownBtn.contains(event.target) && !dropdownMenu.contains(event.target)) {
+      dropdownMenu.classList.add('hidden');
+    }
+  });
+</script>

@@ -1,0 +1,309 @@
+<% layout('layouts/boilerplate') %>
+<%- include('../partials/navbar') %>    
+
+<main class="pt-8 pb-16 lg:pt-16 lg:pb-24 bg-white dark:bg-gray-900 antialiased">
+  <div class="flex justify-between px-4 mx-auto max-w-screen-xl ">
+      <article class="mx-auto w-full max-w-2xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert">
+          <header class="mb-4 lg:mb-6 not-format">
+              <address class="flex items-center mb-6 not-italic">
+                  <div class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white">
+                      <img class="mr-4 w-16 h-16 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-2.jpg" alt="Jese Leos">
+                      <div>
+                          <a href="#" rel="author" class="text-xl font-bold text-gray-900 dark:text-white"><%=authorName%></a>
+                          <p class="text-base text-gray-500 dark:text-gray-400">Graphic Designer, educator </p>
+                          <p class="text-base text-gray-500 dark:text-gray-400"><time pubdate datetime="2022-02-08" title="February 8th, 2022"><% if(blog.createdAt){ %>
+                            <%=blog.createdAt.toDateString() %>
+                            <% } %></time></p>
+                      </div>
+                  </div>
+              </address>
+              <h1 class="mb-4 text-3xl font-extrabold leading-tight text-gray-900 lg:mb-6 lg:text-4xl dark:text-white"><%= blog.title %></h1>
+          </header>
+          <p class="lead text-white mb-5">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur provident excepturi ratione libero ea dolor ipsa laudantium maiores impedit nihil expedita eaque hic, ex unde ipsam debitis dolore a modi et numquam ab, accusantium voluptatum minus? Accusantium labore odio laboriosam veritatis dicta deleniti dolore, ratione, itaque veniam culpa rerum repellat magni? Ab obcaecati quod natus numquam placeat voluptatem, optio nesciunt autem ipsam voluptate inventore alias beatae tenetur eius quia voluptatibus mollitia totam debitis rem dolorum possimus minima eveniet! Suscipit, dignissimos.</p>
+          <figure><img src="<%= blog.img %>" alt="" style="width: 100%;" class="w-full h-auto"/>
+              <figcaption class="text-white mt-5">Digital art by Anonymous</figcaption>
+          </figure>
+  <!-- Background overlay -->
+  <div id="overlay" class="hidden fixed top-0 right-0 left-0 bottom-0 bg-black bg-opacity-50 z-40">
+
+  <!-- Popup container -->
+  <div id="popup" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full">
+    <div class="relative p-4 w-full max-w-2xl">
+      <!-- Modal content -->
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <!-- Modal header -->
+        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+            Terms of Service
+          </h3>
+          <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" onclick="closePopup()">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <!-- Modal body -->
+        <div class="p-4 md:p-5 space-y-4">
+          <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+            With less than a month to go before the European Union enacts new consumer privacy laws for its citizens, companies around the world are updating their terms of service agreements to comply.
+          </p>
+          <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+            The European Union's General Data Protection Regulation (G.D.P.R.) goes into effect on May 25 and is meant to ensure a common set of data rights in the European Union. It requires organizations to notify users as soon as possible of high-risk data breaches that could personally affect them.
+          </p>
+        </div>
+        <!-- Modal footer -->
+        <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+          <button onclick="closePopup()" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">I accept</button>
+          <a href="/blogs"><button onclick="closePopup()" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Decline</button></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  
+  <h2 class="text-white text-3xl font-bold mb-2 mt-2">Getting started with <%= blog.title %> </h2>
+  <p class="text-white">
+    <%= blog.lgdesc %>
+  </p>
+
+
+  <% if(currentUser && (currentUser.role == 'elite_writer' || currentUser.role == 'premium_writer')){ %>
+    <div class="flex items-center space-x-7">
+      <a href="/blogs/<%= blog.id%>/edit" class="text-yellow-500 hover:text-yellow-700 font-medium transition-colors duration-300">Edit</a>
+      <form action="<%= blog.id %>/delete" method="post" onsubmit="return confirm('Are you sure you want to delete this blog?')">
+        <button type="submit" class="text-red-500 hover:text-red-700 font-medium transition-colors duration-300">Delete</button>
+      </form>
+    </div>
+    
+  <% } %>
+  
+      <div class="flex justify-between items-center mb-6 mt-5">
+          <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Discussion (20)</h2>
+      </div>
+      <form  action="/blogs/<%= blog.id%>/review" method="post" class="mb-6" >
+          <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+              <label for="comment" class="sr-only">Your comment</label>
+              <textarea id="comment" rows="6" name="comment"
+                  class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+                  placeholder="Write a comment..." required></textarea>
+          </div>
+          <button type="submit"
+              class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+              Post comment
+          </button>
+
+          <!-- <button type="submit" class="ml-4 px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 focus:outline-none focus:bg-blue-600">Post comment</button> -->
+      </form>
+
+
+      
+      <% for(let review of blog.reviews){ %>
+        <article class="p-6 mb-6 text-white bg-white rounded-lg dark:bg-gray-900">
+          <footer class="flex justify-between items-center mb-2">
+              <div class="flex items-center">
+                  <p class="inline-flex items-center mr-3 font-semibold text-sm text-gray-900 dark:text-white">
+                      <img class="mr-3 w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-1.jpg"
+                          alt="John Doe">
+                      <%= review.commentor %>
+                  </p>
+                  <time class="text-xs text-gray-500 dark:text-gray-400"><% if(review.createdAt){ %>
+                    <%=review.createdAt.toDateString() %>
+                    <% } %></time>
+              </div>
+            
+          </footer>
+          <p class="text-sm"><%= review.comment %></p>
+      </article>
+      <% } %>
+
+
+
+      
+  
+</article>
+</div>
+</main>
+
+
+<aside aria-label="Related articles" class="py-8 lg:py-24 bg-gray-50 dark:bg-gray-800">
+<div class="px-4 mx-auto max-w-screen-xl">
+<h2 class="mb-8 text-2xl font-bold text-gray-900 dark:text-white">Related articles</h2>
+<div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+<% for(let b of relatedBlogs){ %>
+  <article class="max-w-xs h-full overflow-hidden rounded-lg shadow-lg bg-white dark:bg-gray-900 flex flex-col">
+    <a href="#">
+      <img src="<%= b.img %>" class="object-cover w-full h-32 sm:h-48 rounded-t-lg" alt="Image 1">
+    </a>
+    <div class="p-4 flex-1 flex flex-col">
+      <h2 class="mb-2 text-xl font-bold leading-tight text-gray-900 dark:text-white">
+        <a href="#"><%= b.title %></a>
+      </h2>
+      <p class="mb-4 text-gray-500 dark:text-gray-400 line-clamp-3"><%= b.desc %></p>
+      <div class="mt-auto">
+        <a href="/blogs/<%= b._id %>" class="text-white inline-flex items-center font-medium underline underline-offset-4 text-primary-600 dark:text-primary-500 hover:no-underline">
+          Read in 2 minutes
+        </a>
+      </div>
+    </div>
+  </article>
+<% } %>
+</div>
+
+</div>
+</aside>
+
+<section class="bg-white dark:bg-gray-900">
+<div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+<div class="mx-auto max-w-screen-md sm:text-center">
+  <h2 class="mb-4 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl dark:text-white">Sign up for our newsletter</h2>
+  <p class="mx-auto mb-8 max-w-2xl  text-gray-500 md:mb-12 sm:text-xl dark:text-gray-400">Stay up to date with the roadmap progress, announcements and exclusive discounts feel free to sign up with your email.</p>
+  <form action="#">
+      <div class="items-center mx-auto mb-3 space-y-4 max-w-screen-sm sm:flex sm:space-y-0">
+          <div class="relative w-full">
+              <label for="email" class="hidden mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Email address</label>
+              
+              <input class="block p-3 pl-9 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 sm:rounded-none sm:rounded-l-lg focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Enter your email" type="email" id="email" required="">
+          </div>
+          <div>
+              <button type="submit" class="py-3 px-5 w-full text-sm font-medium text-center text-white rounded-lg border cursor-pointer bg-primary-700 border-primary-600 sm:rounded-none sm:rounded-r-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Subscribe</button>
+          </div>
+      </div>
+      <div class="mx-auto max-w-screen-sm text-sm text-left text-gray-500 newsletter-form-footer dark:text-gray-300">We care about the protection of your data. <a href="#" class="font-medium text-primary-600 dark:text-primary-500 hover:underline">Read our Privacy Policy</a>.</div>
+  </form>
+</div>
+</div>
+</section>
+
+<footer class="bg-gray-50 dark:bg-gray-800 antialiased">
+<div class="p-4 py-6 mx-auto max-w-screen-xl md:p-8 lg:p-10">
+<div class="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5">
+  <div>
+      <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Company</h2>
+      <ul class="text-gray-500 dark:text-gray-400">
+          <li class="mb-4">
+              <a href="#" class=" hover:underline">About</a>
+          </li>
+          <li class="mb-4">
+              <a href="#" class="hover:underline">Careers</a>
+          </li>
+          <li class="mb-4">
+              <a href="#" class="hover:underline">Brand Center</a>
+          </li>
+          <li class="mb-4">
+              <a href="#" class="hover:underline">Blog</a>
+          </li>
+      </ul>
+  </div>
+  <div>
+      <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Help center</h2>
+      <ul class="text-gray-500 dark:text-gray-400">
+          <li class="mb-4">
+              <a href="#" class="hover:underline">Discord Server</a>
+          </li>
+          <li class="mb-4">
+              <a href="#" class="hover:underline">Twitter</a>
+          </li>
+          <li class="mb-4">
+              <a href="#" class="hover:underline">Facebook</a>
+          </li>
+          <li class="mb-4">
+              <a href="#" class="hover:underline">Contact Us</a>
+          </li>
+      </ul>
+  </div>
+  <div>
+      <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Legal</h2>
+      <ul class="text-gray-500 dark:text-gray-400">
+          <li class="mb-4">
+              <a href="#" class="hover:underline">Privacy Policy</a>
+          </li>
+          <li class="mb-4">
+              <a href="#" class="hover:underline">Licensing</a>
+          </li>
+          <li class="mb-4">
+              <a href="#" class="hover:underline">Terms</a>
+          </li>
+      </ul>
+  </div>
+  <div>
+      <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Company</h2>
+      <ul class="text-gray-500 dark:text-gray-400">
+          <li class="mb-4">
+              <a href="#" class=" hover:underline">About</a>
+          </li>
+          <li class="mb-4">
+              <a href="#" class="hover:underline">Careers</a>
+          </li>
+          <li class="mb-4">
+              <a href="#" class="hover:underline">Brand Center</a>
+          </li>
+          <li class="mb-4">
+              <a href="#" class="hover:underline">Blog</a>
+          </li>
+      </ul>
+  </div>
+  <div>
+      <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Download</h2>
+      <ul class="text-gray-500 dark:text-gray-400">
+          <li class="mb-4">
+              <a href="#" class="hover:underline">iOS</a>
+          </li>
+          <li class="mb-4">
+              <a href="#" class="hover:underline">Android</a>
+          </li>
+          <li class="mb-4">
+              <a href="#" class="hover:underline">Windows</a>
+          </li>
+          <li class="mb-4">
+              <a href="#" class="hover:underline">MacOS</a>
+          </li>
+      </ul>
+  </div>
+</div>
+<hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8">
+<div class="text-center">
+  <h1 class="font-bold text-3xl text-gray-900 dark:text-white"><em>Pen & Pixels</em></h1>
+</div>
+</div>
+</footer>
+
+
+
+
+
+<script>
+  // Function to display the popup without delay when the mouse is moving
+  function displayPopupOnMouseMove() {
+    document.getElementById('popup').classList.remove('hidden');
+    document.getElementById('overlay').classList.remove('hidden');
+  }
+
+  // Function to display the popup after 10 seconds
+  function displayPopup() {
+    setTimeout(function() {
+      document.getElementById('popup').classList.remove('hidden');
+      document.getElementById('overlay').classList.remove('hidden');
+    }, 2000); // 10 seconds
+  }
+
+  // Function to close the popup
+  function closePopup() {
+    document.getElementById('popup').classList.add('hidden');
+    document.getElementById('overlay').classList.add('hidden');
+    // Re-display the popup after 5 seconds
+    setTimeout(function() {
+      document.getElementById('popup').classList.remove('hidden');
+      document.getElementById('overlay').classList.remove('hidden');
+    }, 2000); // 5 seconds
+  }
+
+  // Call displayPopup when the page loads
+  window.onload = function() {
+    displayPopup();
+  };
+
+  // Add event listener to detect mouse movement
+  document.addEventListener('mousemove', displayPopupOnMouseMove);
+</script>
